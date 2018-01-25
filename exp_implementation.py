@@ -31,8 +31,12 @@ class Individuation(ShowBase, IndividuationStateMachine):
         # add tasks (run every frame)
         taskMgr.add(self.get_user_input, 'move')
         taskMgr.add(self.update_target_color, 'target_color')
-        self.setup_state_machine()
-        self.accept('escape', self.esc_on)  # toggle a boolean somewhere
+        taskMgr.add(self.update_state, 'update_state')
+        self.accept('space', self.space_on)  # toggle a boolean somewhere
+        self.space = False
+        self.trial_counter = 0
+        self.dist = 100
+        self.queue = list()
 
     def load_models(self):
         self.axes_model = self.loader.loadModel('axes')
@@ -47,7 +51,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
         self.target.setColorScale(0, 0, 0, 1)
         self.target.setTransparency(TransparencyAttrib.MAlpha)
         self.target.setAlphaScale(0.7)
-        # self.target.hide()
+        self.target.hide()
 
         self.player.reparentTo(self.render)
         self.player.setPos(0, 0, 0)
@@ -88,8 +92,8 @@ class Individuation(ShowBase, IndividuationStateMachine):
     def load_audio(self):
         self.pop = self.loader.loadSfx('Blop-Mark_DiAngelo-79054334.wav')
 
-    def esc_on(self):
-        self.esc = True
+    def space_on(self):
+        self.space = True
 
     def get_user_input(self, task):
         dt = taskMgr.globalClock.get_dt()
@@ -102,18 +106,76 @@ class Individuation(ShowBase, IndividuationStateMachine):
         return task.cont
 
     def update_target_color(self, task):
-        dist = np.sqrt((self.player.get_x() - self.target.get_x()) ** 2 + (self.player.get_y() -
-                                                                           self.target.get_y()) ** 2 + (self.player.get_z() - self.target.get_z()) ** 2)
+        dist = np.sqrt((self.player.get_x() - self.target.get_x()) ** 2 +
+                       (self.player.get_y() - self.target.get_y()) ** 2 +
+                       (self.player.get_z() - self.target.get_z()) ** 2)
         d2 = 1 - dist
-        if (dist < 0.05):
-            self.text.setText('HOT!')
-        else:
-            self.text.setText('Cold...')
+        self.dist = dist
         self.target.setColorScale(d2, d2, d2, 0.7)
         return task.cont
 
-    def setup_state_machine(self):
-        pass
-
     def update_state(self, task):
-        self.state_machine.step()
+        self.step()
+        return task.cont
+
+    # state machine functions
+    def wait_for_space(self):
+        return self.space
+
+    def start_trial_countdown(self):
+        self.countdown_timer.reset(10)
+    
+    def show_target(self):
+        self.target.show()
+    
+    def trial_text(self):
+        self.text.setText('Move for the target!')
+    
+    def close_to_target(self):
+        return self.dist < 0.05
+    
+    def start_hold_countdown(self):
+        self.countdown_timer.reset(2)
+    
+    def hold_text(self):
+        self.text.setText('HOLD IT')
+    
+    def time_elapsed(self):
+        return self.countdown_timer.elapsed() < 0
+
+    def hide_target(self):
+        self.target.hide()
+    
+    def start_post_countdown(self):
+        self.countdown_timer.reset(2)
+    
+    def queue_distance(self):
+        self.queue.append(self.close_to_target())
+
+    def check_distance(self):
+        tmp = np.sum(self.queue)/len(self.queue)
+        self.queue = list()        
+        if tmp > 0.5:
+            self.pop.play()
+    
+    def increment_trial_counter(self):
+        self.trial_counter += 1
+    
+    def write_trial_data(self):
+        pass
+    
+    def trial_counter_exceeded(self):
+        return self.trial_counter > self.table.shape[0]
+
+    def clean_up(self):
+        pass
+    
+    def reset_keyboard_bool(self):
+        self.space = False
+    
+    def post_text(self):
+        self.text.setText('Relax!!!!')
+    
+    def kb_text(self):
+        self.text.setText('Press space to start')
+    

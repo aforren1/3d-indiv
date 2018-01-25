@@ -27,7 +27,7 @@ class IndividuationStateMachine(Machine):
         moving_t2 = {'source': 'moving',
                      'trigger': 'step',
                      'conditions': 'time_elapsed',  # check if countdown timer is negative
-                     'after': ['remove_target',
+                     'after': ['hide_target',
                                'start_post_countdown'],
                      'dest': 'post_trial'}
 
@@ -36,11 +36,12 @@ class IndividuationStateMachine(Machine):
                             'prepare': 'queue_distance',
                             'trigger': 'step',
                             'conditions': 'time_elapsed',
-                            'after': ['remove_target',
+                            'after': ['hide_target',
                                       'start_post_countdown',
                                       'check_distance',  # if managed to hold force, happy sound
                                       'increment_trial_counter',
-                                      'write_trial_data'],
+                                      'write_trial_data',
+                                      'post_text'],
                             'dest': 'post_trial'}
 
         post_trial_t = {'source': 'post_trial',
@@ -52,7 +53,7 @@ class IndividuationStateMachine(Machine):
         post_trial_t2 = {'source': 'post_trial',
                          'trigger': 'step',
                          'conditions': 'time_elapsed',
-                         'after': 'reset_keyboard_bool',
+                         'after': ['reset_keyboard_bool', 'kb_text'],
                          'dest': 'pre_trial'}
 
         transitions = [pre_trial_t, moving_t, moving_t2,
