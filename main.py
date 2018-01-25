@@ -1,12 +1,13 @@
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.task.TaskManagerGlobal import taskMgr
-from panda3d.core import (PointLight, Spotlight, AntialiasAttrib, KeyboardButton, TransparencyAttrib)
+from panda3d.core import (PointLight, Spotlight, AntialiasAttrib, KeyboardButton, TransparencyAttrib, PStatClient)
 
 import sys
 import argparse
 import numpy as np
 import pandas as pd
+import timers # personal module
 
 class Individuation(ShowBase):
     def __init__(self, dev, trial_table):
@@ -22,6 +23,8 @@ class Individuation(ShowBase):
         self.setup_lights()
         self.setup_camera()
         taskMgr.add(self.get_user_input, 'move')
+        taskMgr.add(self.update_target_color, 'target_colour')
+        self.setup_state_machine()
 
     def load_models(self):
         self.axes_model = loader.loadModel('axes')
@@ -32,14 +35,15 @@ class Individuation(ShowBase):
         
         self.target.reparentTo(render)
         self.target.setPos(-0.1, 0.2, 0)
-        self.target.setScale(0.2, 0.2, 0.2)
+        self.target.setScale(0.05, 0.05, 0.05)
+        self.target.setColorScale(0, 0, 0, 1)
         self.target.setTransparency(TransparencyAttrib.MAlpha)
         self.target.setAlphaScale(0.7)
-        self.target.hide()      
+        #self.target.hide()      
 
         self.player.reparentTo(render)
         self.player.setPos(0, 0, 0)
-        self.player.setScale(0.1, 0.1, 0.1)
+        self.player.setScale(0.03, 0.03, 0.03)
         
         self.cam2dp.node().getDisplayRegion(0).setSort(-20)
         OnscreenImage(parent = self.cam2dp, image = 'background.jpg')
@@ -76,6 +80,15 @@ class Individuation(ShowBase):
             y = base.mouseWatcherNode.getMouseY()
             self.player.setPos(x, y, 0)
         return task.cont
+
+    def update_target_color(self, task):
+        dist = np.sqrt((self.player.get_x() - self.target.get_x()) ** 2 + (self.player.get_y() - self.target.get_y()) ** 2 + (self.player.get_z() - self.target.get_z()) ** 2)
+        d2 = 1 - dist
+        self.target.setColorScale(d2, d2, d2, 0.7)
+        return task.cont
+
+    def setup_state_machine(self):
+        pass
 
     def update_state(self, task):
         self.state_machine.step()
