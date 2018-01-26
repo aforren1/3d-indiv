@@ -1,11 +1,13 @@
+import sys
+
 import numpy as np
 import pandas as pd
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.ShowBase import ShowBase
 from direct.task.TaskManagerGlobal import taskMgr
-from panda3d.core import (AntialiasAttrib, PointLight,
-                          Spotlight, TransparencyAttrib, TextNode)
+from panda3d.core import (AntialiasAttrib, PointLight, Spotlight, TextNode,
+                          TransparencyAttrib)
 
 import timers  # personal module
 from machine import IndividuationStateMachine
@@ -167,9 +169,6 @@ class Individuation(ShowBase, IndividuationStateMachine):
     def trial_counter_exceeded(self):
         return self.trial_counter > self.table.shape[0]
 
-    def clean_up(self):
-        pass
-
     def reset_keyboard_bool(self):
         self.space = False
 
@@ -178,3 +177,6 @@ class Individuation(ShowBase, IndividuationStateMachine):
 
     def kb_text(self):
         self.text.setText('Press space to start')
+    
+    def clean_up(self):
+        sys.exit()

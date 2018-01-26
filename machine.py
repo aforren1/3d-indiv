@@ -7,7 +7,8 @@ class IndividuationStateMachine(Machine):
                   # after space press, start countdown timer and show target (5 sec to be within n dist of target)
                   'moving',
                   'hold_in_target',  # restart countdown timer for 1s
-                  'post_trial']  # if more than half of time was in target, happy. Remove target and wait ~1s
+                  'post_trial',
+                  'post_exp']  # if more than half of time was in target, happy. Remove target and wait ~1s
 
         pre_trial_t = {'source': 'pre_trial',
                        'trigger': 'step',
@@ -47,8 +48,8 @@ class IndividuationStateMachine(Machine):
         post_trial_t = {'source': 'post_trial',
                         'trigger': 'step',
                         'conditions': 'trial_counter_exceeded',
-                        'after': 'clean_up',
-                        'dest': 'post_exp'}  # run sys.exit
+                        'after': 'clean_up',  # run sys.exit
+                        'dest': 'post_exp'}
 
         post_trial_t2 = {'source': 'post_trial',
                          'trigger': 'step',
