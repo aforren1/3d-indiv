@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
 from direct.gui.OnscreenImage import OnscreenImage
-from direct.gui.OnscreenText import OnscreenText, TextNode
+from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.ShowBase import ShowBase
 from direct.task.TaskManagerGlobal import taskMgr
-from panda3d.core import (AntialiasAttrib, KeyboardButton, PointLight,
-                          PStatClient, Spotlight, TransparencyAttrib)
+from panda3d.core import (AntialiasAttrib, PointLight,
+                          Spotlight, TransparencyAttrib, TextNode)
 
 import timers  # personal module
 from machine import IndividuationStateMachine
@@ -33,15 +33,17 @@ class Individuation(ShowBase, IndividuationStateMachine):
         taskMgr.add(self.update_target_color, 'target_color')
         taskMgr.add(self.update_state, 'update_state')
         self.accept('space', self.space_on)  # toggle a boolean somewhere
+
+        # helpers
         self.space = False
         self.trial_counter = 0
         self.dist = 100
         self.queue = list()
 
     def load_models(self):
-        self.axes_model = self.loader.loadModel('axes')
-        self.target = self.loader.loadModel('target')
-        self.player = self.loader.loadModel('player')
+        self.axes_model = self.loader.loadModel('models/axes')
+        self.target = self.loader.loadModel('models/target')
+        self.player = self.loader.loadModel('models/player')
 
         self.axes_model.reparentTo(self.render)
 
@@ -58,7 +60,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
         self.player.setScale(0.03, 0.03, 0.03)
 
         self.cam2dp.node().getDisplayRegion(0).setSort(-20)
-        OnscreenImage(parent=self.cam2dp, image='background.jpg')
+        OnscreenImage(parent=self.cam2dp, image='models/background.jpg')
 
         self.text = OnscreenText(text='Press space to start', pos=(-0.8, 0.8),
                                  scale=0.08, fg=(1, 1, 1, 1),
@@ -97,8 +99,6 @@ class Individuation(ShowBase, IndividuationStateMachine):
 
     def get_user_input(self, task):
         dt = taskMgr.globalClock.get_dt()
-        if dt > 0.018:
-            print(dt)
         if self.mouseWatcherNode.hasMouse():
             x = self.mouseWatcherNode.getMouseX()
             y = self.mouseWatcherNode.getMouseY()
@@ -124,58 +124,57 @@ class Individuation(ShowBase, IndividuationStateMachine):
 
     def start_trial_countdown(self):
         self.countdown_timer.reset(10)
-    
+
     def show_target(self):
         self.target.show()
-    
+
     def trial_text(self):
         self.text.setText('Move for the target!')
-    
+
     def close_to_target(self):
         return self.dist < 0.05
-    
+
     def start_hold_countdown(self):
         self.countdown_timer.reset(2)
-    
+
     def hold_text(self):
         self.text.setText('HOLD IT')
-    
+
     def time_elapsed(self):
         return self.countdown_timer.elapsed() < 0
 
     def hide_target(self):
         self.target.hide()
-    
+
     def start_post_countdown(self):
         self.countdown_timer.reset(2)
-    
+
     def queue_distance(self):
         self.queue.append(self.close_to_target())
 
     def check_distance(self):
         tmp = np.sum(self.queue)/len(self.queue)
-        self.queue = list()        
+        self.queue = list()
         if tmp > 0.5:
             self.pop.play()
-    
+
     def increment_trial_counter(self):
         self.trial_counter += 1
-    
+
     def write_trial_data(self):
         pass
-    
+
     def trial_counter_exceeded(self):
         return self.trial_counter > self.table.shape[0]
 
     def clean_up(self):
         pass
-    
+
     def reset_keyboard_bool(self):
         self.space = False
-    
+
     def post_text(self):
         self.text.setText('Relax!!!!')
-    
+
     def kb_text(self):
         self.text.setText('Press space to start')
-    

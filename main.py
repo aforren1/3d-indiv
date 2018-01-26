@@ -7,7 +7,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--id', help='Subject ID', default='007')
     parser.add_argument(
-        '--tgt', help='Path to trial table', default='test.txt')
+        '--tgt', help='Path to trial table', default='tables/test.txt')
     parser.add_argument('--dev', help='Device to use', default='mouse')
     args = parser.parse_args()
     print(args)
