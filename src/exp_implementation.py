@@ -8,10 +8,10 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task.TaskManagerGlobal import taskMgr
 from panda3d.core import (AntialiasAttrib, PointLight, Spotlight, TextNode,
                           TransparencyAttrib)
-from pandac.PandaModules import loadPrcFileData
+from panda3d.core import loadPrcFileData
 
-from py.timers import CountdownTimer  # personal module
-from py.machine import IndividuationStateMachine
+from src.timers import CountdownTimer  # personal module
+from src.machine import IndividuationStateMachine
 
 
 class Individuation(ShowBase, IndividuationStateMachine):

@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from py.exp_implementation import Individuation
+from src.exp_implementation import Individuation
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
