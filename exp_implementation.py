@@ -19,6 +19,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
         IndividuationStateMachine.__init__(self)
         self.render.setAntialias(AntialiasAttrib.MMultisample)
         self.render.setShaderAuto()  # allows shadows
+        self.setFrameRateMeter(True)
 
         self.dev = dev
         self.disableMouse()

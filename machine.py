@@ -47,7 +47,8 @@ class IndividuationStateMachine(Machine):
 
         post_trial_t = {'source': 'post_trial',
                         'trigger': 'step',
-                        'conditions': 'trial_counter_exceeded',
+                        'conditions': ['time_elapsed', 
+                                       'trial_counter_exceeded'],
                         'after': 'clean_up',  # run sys.exit
                         'dest': 'post_exp'}
 
