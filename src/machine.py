@@ -29,7 +29,10 @@ class IndividuationStateMachine(Machine):
                      'trigger': 'step',
                      'conditions': 'time_elapsed',  # check if countdown timer is negative
                      'after': ['hide_target',
-                               'start_post_countdown'],
+                               'start_post_countdown',
+                               'increment_trial_counter',
+                               'write_trial_data',
+                               'post_text'],
                      'dest': 'post_trial'}
 
         # hold in target

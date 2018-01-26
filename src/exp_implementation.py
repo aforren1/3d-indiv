@@ -63,7 +63,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
         self.player.reparentTo(self.render)
         self.player.setPos(0, 0, 0)
         self.player.setScale(0.05, 0.05, 0.05)
-        self.player.setColorScale(0.3, 0.8, 0.2, 1)
+        self.player.setColorScale(0.3, 0.7, 0.2, 1)
 
         self.cam2dp.node().getDisplayRegion(0).setSort(-20)
         OnscreenImage(parent=self.cam2dp, image='models/background.jpg')
