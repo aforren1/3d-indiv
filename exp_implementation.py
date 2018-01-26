@@ -8,13 +8,15 @@ from direct.showbase.ShowBase import ShowBase
 from direct.task.TaskManagerGlobal import taskMgr
 from panda3d.core import (AntialiasAttrib, PointLight, Spotlight, TextNode,
                           TransparencyAttrib)
+from pandac.PandaModules import loadPrcFileData
 
 import timers  # personal module
 from machine import IndividuationStateMachine
 
 
 class Individuation(ShowBase, IndividuationStateMachine):
-    def __init__(self, dev, trial_table):
+    def __init__(self, dev, trial_table, fullscreen):
+        loadPrcFileData('', 'fullscreen ' + str(fullscreen))
         ShowBase.__init__(self)
         IndividuationStateMachine.__init__(self)
         self.render.setAntialias(AntialiasAttrib.MMultisample)
@@ -52,7 +54,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
 
         self.target.reparentTo(self.render)
         self.target.setPos(-0.1, 0.2, 0)
-        self.target.setScale(0.05, 0.05, 0.05)
+        self.target.setScale(0.08, 0.08, 0.08)
         self.target.setColorScale(0, 0, 0, 1)
         self.target.setTransparency(TransparencyAttrib.MAlpha)
         self.target.setAlphaScale(0.7)
@@ -60,7 +62,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
 
         self.player.reparentTo(self.render)
         self.player.setPos(0, 0, 0)
-        self.player.setScale(0.03, 0.03, 0.03)
+        self.player.setScale(0.05, 0.05, 0.05)
         self.player.setColorScale(0.3, 0.8, 0.2, 1)
 
         self.cam2dp.node().getDisplayRegion(0).setSort(-20)
