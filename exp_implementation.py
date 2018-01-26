@@ -130,6 +130,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
 
     def show_target(self):
         self.target.show()
+        self.target.setPos(self.table.x[self.trial_counter], self.table.y[self.trial_counter], self.table.z[self.trial_counter])
 
     def trial_text(self):
         self.text.setText('Move for the target!')
@@ -168,7 +169,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
         pass
 
     def trial_counter_exceeded(self):
-        return self.trial_counter > self.table.shape[0]
+        return (self.trial_counter + 1) > self.table.shape[0]
 
     def reset_keyboard_bool(self):
         self.space = False
