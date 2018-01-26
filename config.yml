@@ -1,0 +1,6 @@
+exp:
+    prop_accept: 0.5 # proportion of the time the user remains in the target to get reward
+    nope: True
+other:
+    foo: 'bar'
+    bar: 'foo'

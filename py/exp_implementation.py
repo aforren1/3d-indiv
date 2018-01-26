@@ -10,8 +10,8 @@ from panda3d.core import (AntialiasAttrib, PointLight, Spotlight, TextNode,
                           TransparencyAttrib)
 from pandac.PandaModules import loadPrcFileData
 
-import timers  # personal module
-from machine import IndividuationStateMachine
+from py.timers import CountdownTimer  # personal module
+from py.machine import IndividuationStateMachine
 
 
 class Individuation(ShowBase, IndividuationStateMachine):
@@ -25,7 +25,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
 
         self.dev = dev
         self.disableMouse()
-        self.countdown_timer = timers.CountdownTimer()
+        self.countdown_timer = CountdownTimer()
 
         self.table = pd.read_table(trial_table)  # trial table
         self.setup_lights()
@@ -98,7 +98,7 @@ class Individuation(ShowBase, IndividuationStateMachine):
         self.cam.lookAt(0, 0, 0)
 
     def load_audio(self):
-        self.pop = self.loader.loadSfx('Blop-Mark_DiAngelo-79054334.wav')
+        self.pop = self.loader.loadSfx('audio/Blop-Mark_DiAngelo-79054334.wav')
 
     def space_on(self):
         self.space = True
